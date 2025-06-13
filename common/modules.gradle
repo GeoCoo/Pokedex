@@ -1,0 +1,44 @@
+dependencies {
+    // Application Modules
+    implementation project(":core:core_design_system")
+    implementation project(":core:core_ui")
+    implementation project(":core:core_model")
+
+    //core-common
+    implementation project(":core:core_common:helpers")
+
+    //core-api
+    implementation project(":core:core_api:di")
+    implementation project(":core:core_api:api")
+    implementation project(":core:core_api:impl")
+
+    //core-data
+    implementation project(":core:core_data:di")
+    implementation project(":core:core_data:api")
+    implementation project(":core:core_data:impl")
+
+    //core-domain
+    implementation project(":core:core_domain:di")
+    implementation project(":core:core_domain:controller:api")
+    implementation project(":core:core_domain:controller:impl")
+    implementation project(":core:core_domain:interactor:api")
+    implementation project(":core:core_domain:interactor:impl")
+    implementation project(":core:core_domain:model")
+    implementation project(":core:core_domain:session")
+
+    //core-resources
+    implementation project(":core:core_resources")
+    implementation project(":core:core_resources:provider:api")
+    implementation project(":core:core_resources:provider:impl")
+    implementation project(":core:core_resources:provider:di")
+
+    //features
+    implementation project(":feature:splash")
+    implementation project(":feature:pokemons")
+
+    //naviagtion
+    implementation project(":navigation:api")
+    implementation project(":navigation:impl")
+
+
+}

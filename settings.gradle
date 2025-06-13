@@ -21,3 +21,47 @@ dependencyResolutionManagement {
 
 rootProject.name = "Pokedex"
 include ':app'
+
+include ':core:core_design_system'
+include ':core:core_model'
+include ':core:core_ui'
+include ':core:core_tests'
+
+//core-common
+include ':core:core_common:helpers'
+
+
+//features
+include ':feature:splash'
+include ':feature:feature_tests'
+
+//core-api
+include ':core:core_api:di'
+include ':core:core_api:api_service'
+include ':core:core_api:api'
+include ':core:core_api:impl'
+
+//core-data
+include ':core:core_data:di'
+include ':core:core_data:api'
+include ':core:core_data:impl'
+
+//core-domain
+include ':core:core_domain:di'
+include ':core:core_domain:controller:api'
+include ':core:core_domain:controller:impl'
+include ':core:core_domain:interactor:api'
+include ':core:core_domain:interactor:impl'
+include ':core:core_domain:model'
+include ':core:core_domain:session'
+
+//core-resoursces
+include ':core:core_resources'
+include ':core:core_resources:provider:api'
+include ':core:core_resources:provider:impl'
+include ':core:core_resources:provider:di'
+
+//navigation
+include ':navigation:api'
+include ':navigation:impl'
+include ':feature:pokemons'

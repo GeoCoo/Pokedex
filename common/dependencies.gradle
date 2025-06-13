@@ -1,0 +1,83 @@
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
+
+dependencies {
+    implementation fileTree(include: ["*.jar"], dir: "libs")
+    //Accompanist
+    implementation(libs.accompanist.systemuicontroller)
+
+    //AndroidX
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.android.work.runtime)
+
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.navigation)
+
+    // Kotlin
+    implementation(libs.kotlin.stdlib)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.json)
+
+    // Secure shared preferences library.
+    implementation(libs.androidx.security)
+
+    // OkHttp3
+    implementation(libs.okhttp3.interceptor)
+
+    //ComposeBOM
+    implementation platform(libs.androidx.compose.bom)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    //Coil
+    implementation(libs.coil)
+    //Test
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext)
+
+    // Coroutines test
+    testImplementation(libs.coroutines.test)
+
+    // Mock Server
+    testImplementation(libs.okhttp3.mockwebserver)
+
+    // Mockito
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+
+    // Hilt Test
+    androidTestImplementation(libs.hilt.android.testing)
+    testImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.compiler)
+    kaptTest(libs.hilt.compiler)
+
+
+    //Debug
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Turbine
+    testImplementation(libs.turbine)
+
+    // Robolectric
+    testImplementation(libs.robolectric)
+
+    // hilt
+    implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.common)
+    implementation(libs.hilt.work)
+
+    kapt(libs.hilt.compiler)
+    kapt(libs.hilt.androidx.compiler)
+
+
+}

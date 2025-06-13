@@ -1,0 +1,25 @@
+apply from: "$rootProject.projectDir/common/library-module.gradle"
+apply from: "$rootProject.projectDir/common/dependencies.gradle"
+
+android {
+    namespace 'com.android.pokedex.feature.feature_tests'
+}
+
+dependencies {
+    implementation project(":core:core_domain:model")
+    implementation project(":core:core_domain:interactor:api")
+    implementation project(":core:core_domain:interactor:impl")
+
+    implementation project(":core:core_domain:controller:api")
+    implementation project(":core:core_domain:controller:impl")
+
+    implementation project(":core:core_resources")
+    implementation project(":core:core_resources:provider:api")
+    implementation project(":core:core_resources:provider:impl")
+    implementation project(':feature:splash')
+
+
+    implementation project(":core:core_ui")
+    implementation project(":core:core_model")
+
+}

@@ -1,0 +1,12 @@
+apply from: "$rootProject.projectDir/common/library-module.gradle"
+apply from: "$rootProject.projectDir/common/dependencies.gradle"
+android {
+    namespace 'com.android.pokedex.core.core_api.impl'
+}
+
+dependencies {
+    implementation project(':core:core_model')
+    implementation project(':core:core_api:api')
+    implementation project(':core:core_api:api_service')
+
+}

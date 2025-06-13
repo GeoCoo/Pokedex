@@ -1,0 +1,11 @@
+apply from: "$rootProject.projectDir/common/library-module.gradle"
+apply from: "$rootProject.projectDir/common/dependencies.gradle"
+android {
+    namespace 'com.android.pokedex.navigation.impl'
+}
+
+dependencies {
+    implementation project(":navigation:api")
+    implementation project(':feature:splash')
+    implementation project(':feature:pokemons')
+}

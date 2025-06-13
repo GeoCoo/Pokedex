@@ -1,15 +1,59 @@
+# === Gradle ===
+.gradle/
+build/
+!gradle-wrapper.jar
+
+# === Android Studio ===
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
 local.properties
+captures/
+
+# === Build output ===
+**/build/
+**/out/
+*.apk
+*.ap_
+
+# === IntelliJ cache ===
+*.iws
+*.ipr
+*.class
+*.dex
+*.jar
+*.bin
+*.kapt_metadata
+*.kotlin_module
+*.log
+*.tmp
+
+# === Jetpack Compose & Metadata ===
+*.metadata
+*.compose-metadata
+*.kotlin_metadata
+
+# === Compose auto-generated classes ===
+*ComposableSingletons*.*
+MainComposablesKt$*.*
+MainScreenKt$*.*
+MainViewModel$*.*
+MainScreenRouterKt$*.*
+ViewsKt$*.*
+
+
+# === Keystore, encryption blobs, and UUID-style files ===
+*.keystream*
+*.values.*
+*.len
+*=
+*==
+
+# === IDE state ===
+.idea/caches/
+.idea/libraries/
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# === MacOS ===
+.DS_Store

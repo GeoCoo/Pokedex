@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Stylish</string>
+    <string name="search_placeholder">Search any Product…</string>
+    <string name="featured_section_title">All Featured</string>
+    <string name="login_topbar_text">Welcome\nBack!</string>
+    <string name="login_user_section_placeholder">Username or Email</string>
+    <string name="login_password_section_placeholder">Password</string>"
+    <string name="login_btn_text">Login</string>
+    <string name="edit_title">Title</string>
+    <string name="edit_price">Price</string>
+    <string name="edit_category">Category</string>
+    <string name="edit_description">Description</string>
+    <string name="save_btn_txt">Save</string>
+    <string name="all_category">All</string>
+    <string name="single_products_details_title">Product Details</string>
+    <string name="save_suceess">The item updated successfully</string>
+    <string name="generic_error_msg">Something went wrong</string>
+    <string name="no_data_msg">No data found</string>"
+    <string name="show_less_label">Show less</string>
+    <string name="show_more_label">More</string>
+
+</resources>

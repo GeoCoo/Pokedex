@@ -1,0 +1,47 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+apply from: "$rootProject.projectDir/common/dependencies.gradle"
+apply from: "$rootProject.projectDir/common/modules.gradle"
+
+android {
+    namespace 'com.android.pokedex'
+    compileSdk 34
+    defaultConfig {
+        applicationId "com.android.pokdedex"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.compose.compiler.version.get()
+    }
+
+    buildTypes {
+        release {
+            shrinkResources false
+            minifyEnabled false
+            debuggable true
+        }
+    }
+}
