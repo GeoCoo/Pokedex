@@ -51,6 +51,7 @@ class PokemonsViewModel @Inject constructor(
                                     setState {
                                         copy(
                                             pokemons =  partialState.pokemons,
+                                            isLoading = false
                                         )
                                     }
                                 }
@@ -68,10 +69,6 @@ class PokemonsViewModel @Inject constructor(
                                 }
                             }
                         }
-                    setState {
-                        copy(isLoading = false)
-                    }
-
                 }
             }
 

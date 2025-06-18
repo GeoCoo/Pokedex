@@ -79,5 +79,8 @@ dependencies {
     kapt(libs.hilt.compiler)
     kapt(libs.hilt.androidx.compiler)
 
+    //palete
+    implementation(libs.android.palette)
+
 
 }

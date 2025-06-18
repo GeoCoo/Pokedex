@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Stylish</string>
-    <string name="search_placeholder">Search any Product…</string>
+    <string name="app_name">Pokedex</string>
+    <string name="search_placeholder">Search for any Pokemon…</string>
     <string name="featured_section_title">All Featured</string>
     <string name="login_topbar_text">Welcome\nBack!</string>
     <string name="login_user_section_placeholder">Username or Email</string>

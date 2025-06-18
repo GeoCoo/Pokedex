@@ -4,7 +4,8 @@ import com.android.core_model.PokemonEntryDto
 
 data class PokemonDomain(
     val name: String,
-    val url: String
+    val url: String,
+    val bgColor: String? = ""
 )
 
 
