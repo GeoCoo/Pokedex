@@ -68,3 +68,6 @@ include ':navigation:impl'
 //features
 include ':feature:pokemons'
 include ':feature:pokemon_details'
+
+//pagerlib
+include ':pagerlib'

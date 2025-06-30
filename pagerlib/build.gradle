@@ -1,0 +1,17 @@
+apply from: "$rootProject.projectDir/common/library-module.gradle"
+apply from: "$rootProject.projectDir/common/dependencies.gradle"
+
+android {
+    namespace 'com.android.pagerlib'
+}
+
+dependencies {
+    implementation project(':core:core_ui')
+    implementation project(':core:core_domain:model')
+    
+    // For sample integration
+    implementation project(':core:core_domain:interactor:api')
+    
+    // Core Android dependencies are already included via common/dependencies.gradle
+    // Testing dependencies are also included via common/dependencies.gradle
+}
