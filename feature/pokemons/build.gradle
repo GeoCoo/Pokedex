@@ -14,4 +14,7 @@ dependencies {
     implementation project(":navigation:api")
     implementation project(":core:core_domain:session")
     implementation project(":core:core_domain:interactor:api")
+    
+    // Pagination library
+    implementation project(":pagerlib")
 }
