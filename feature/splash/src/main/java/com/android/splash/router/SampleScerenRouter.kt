@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import com.android.api.Screen
 import com.android.splash.ui.SplashScreen
 
-fun NavGraphBuilder.sampleScreen(navController: NavHostController) {
+fun NavGraphBuilder.splashScreen(navController: NavHostController) {
     composable(route = Screen.SplashScreen.route) {
         SplashScreen(onLoaded = {
             navController.navigate(Screen.PokemonsScreen.route)

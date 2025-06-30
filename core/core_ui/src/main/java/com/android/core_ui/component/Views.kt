@@ -122,7 +122,8 @@ fun NetworkImage(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.FillBounds,
-    onColorExtracted: (Color) -> Unit) {
+    onColorExtracted: (Color) -> Unit
+) {
     val context = LocalContext.current
 
     AsyncImage(
@@ -133,7 +134,6 @@ fun NetworkImage(
             .bitmapConfig(Bitmap.Config.ARGB_8888)
             .build(),
         contentDescription = contentDescription,
-        placeholder = painterResource(R.drawable.ic_launcher_foreground),
         modifier = modifier,
         contentScale = contentScale,
         onSuccess = { success ->

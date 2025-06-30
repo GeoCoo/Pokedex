@@ -4,6 +4,7 @@ import com.android.api.ApiClient
 import com.android.api.PokemonsRepository
 import com.android.api.PokemonsResponse
 import com.android.api.ResourceProvider
+import com.android.api.SinglePokemonRespone
 import com.android.pokedex.core.core_resources.R
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -38,22 +39,26 @@ class PokemonsRepositoryImpl @Inject constructor(
         emit(PokemonsResponse.Failed(errorMsg = it.localizedMessage ?: ""))
     }
 
-//    override fun sampleWithParam(param: Any): Flow<PokemonsResponse> = flow {
-//        val response = apiClient.sampleWithParam(param)
-//
-//        when {
-//            response.isSuccessful && response.body() != null -> {
-//                emit(PokemonsResponse.Success(listOf()))
-//            }
-//
-//            else -> {
-//                emit(PokemonsResponse.Failed(""))
-//            }
-//        }
-//    }.catch {
-//        emit(PokemonsResponse.Error(errorMsg = it.localizedMessage ?: ""))
-//
-//    }
+    override fun getSinglePokemon(pokemonName: String): Flow<SinglePokemonRespone> = flow {
+        val response = apiClient.getSinglePokemon(pokemonName)
+        when {
+            response.isSuccessful && response.body() != null -> {
+                emit(SinglePokemonRespone.Success(response.body()))
+            }
+
+            else -> {
+                emit(
+                    SinglePokemonRespone.Error(
+                        errorMsg = resourceProvider.getString(
+                            R.string.generic_error_msg
+                        )
+                    )
+                )
+            }
+        }
+    }.catch {
+        emit(SinglePokemonRespone.Failed(errorMsg = it.localizedMessage ?: ""))
+    }
 //
 //    override fun samplePost(param: Any): Flow<PokemonsResponse> =
 //        flow {

@@ -1,6 +1,7 @@
 package com.android.api_service
 
 import com.android.core_model.PokemonListResponse
+import com.android.core_model.SinglePokemonDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -21,10 +22,10 @@ interface ApiService {
 
 
 
-    @GET("sampleWithParam/{param}")
-    suspend fun sampleRetrieveWithParam(
-        @Path("param") productId: Any
-    ): Response<Any>
+    @GET("pokemon/{pokemonName}")
+    suspend fun getSinglePokemon(
+        @Path("pokemonName") pokemonName: String
+    ): Response<SinglePokemonDto>
 
     @POST("samplePost")
     suspend fun samplePost(

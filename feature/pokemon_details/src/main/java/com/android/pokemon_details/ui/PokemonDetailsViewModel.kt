@@ -1,15 +1,16 @@
-package com.android.pokemons.ui
+package com.android.pokemon_details.ui
+
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewModelScope
 import com.android.api.PokemonInteractor
-import com.android.api.PokemonPartialState
+import com.android.api.SinglePokemonPartialState
 import com.android.core_ui.base.MviViewModel
 import com.android.core_ui.base.ViewEvent
 import com.android.core_ui.base.ViewSideEffect
 import com.android.core_ui.base.ViewState
-import com.android.model.PokemonDomain
+import com.android.model.SinglePokemonDomain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,24 +18,20 @@ import javax.inject.Inject
 
 data class State(
     val isLoading: Boolean,
-    val pokemons: List<PokemonDomain>? = listOf(),
-    val page: Int = 0
+    val pokemonData: SinglePokemonDomain? = null
 ) : ViewState
 
 sealed class Event : ViewEvent {
-    data class GetPokemons(val limit: Int, val offset: Int, val pokemons: List<PokemonDomain>?) :
-        Event()
+    data class GetPokemonDetails(val name: String) : Event()
 
-    data object HandleLoading : Event()
 }
 
 sealed class Effect : ViewSideEffect {
-    data object SampleEffect : Effect()
 }
 
 
 @HiltViewModel
-class PokemonsViewModel @Inject constructor(
+class PokemonDetailsViewModel @Inject constructor(
     private val pokemonInteractor: PokemonInteractor
 ) :
     MviViewModel<Event, State, Effect>() {
@@ -45,40 +42,38 @@ class PokemonsViewModel @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun handleEvents(event: Event) {
         when (event) {
-            is Event.GetPokemons -> {
+            is Event.GetPokemonDetails -> {
                 viewModelScope.launch {
-                    pokemonInteractor.getPokemons(event.limit, event.offset)
+                    pokemonInteractor.getSinglePokemon(event.name)
                         .collect { partialState ->
                             when (partialState) {
-                                is PokemonPartialState.Success -> {
+                                is SinglePokemonPartialState.Success -> {
                                     setState {
                                         copy(
-                                            pokemons = (event.pokemons ?: emptyList()).plus(partialState.pokemons ?: emptyList()),
+                                            pokemonData = partialState.singlePokemon,
                                             isLoading = false,
-                                            page = event.offset + 20
+
+                                            )
+                                    }
+                                }
+
+                                is SinglePokemonPartialState.Failed -> {
+                                    setState {
+                                        copy(
+                                            isLoading = false,
                                         )
                                     }
                                 }
 
-                                is PokemonPartialState.Failed -> {
+                                is SinglePokemonPartialState.Error -> {
                                     setState {
-                                        copy(isLoading = false)
-                                    }
-                                }
-
-                                is PokemonPartialState.Error -> {
-                                    setState {
-                                        copy(isLoading = false)
+                                        copy(
+                                            isLoading = false,
+                                        )
                                     }
                                 }
                             }
                         }
-                }
-            }
-
-            is Event.HandleLoading -> {
-                setState {
-                    copy(isLoading = false)
                 }
             }
         }

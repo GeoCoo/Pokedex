@@ -8,4 +8,5 @@ dependencies {
     implementation project(":navigation:api")
     implementation project(':feature:splash')
     implementation project(':feature:pokemons')
+    implementation project(':feature:pokemon_details')
 }

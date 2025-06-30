@@ -1,10 +1,8 @@
 package com.android.pokemons.ui
 
-import android.annotation.SuppressLint
-import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,19 +12,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.VerticalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -36,14 +32,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -53,54 +47,59 @@ import com.android.core_ui.component.LoadingIndicator
 import com.android.core_ui.component.NetworkImage
 import com.android.model.PokemonDomain
 import com.android.pokedex.core.core_resources.R
+import kotlin.math.abs
+
 
 @Preview
 @Composable
 fun PokemonScreePreview() {
-    PokemonsScreen()
+    val pokemons = List(20) { index ->
+        PokemonDomain(name = "Pokemon $index", url = "https://example.com/pokemon$index.png")
+    }
+    VerticalPagerWith3VisibleItems(pokemons, {})
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PokemonsScreen() {
+fun PokemonsScreen(onPokemonClick: (String) -> Unit) {
     val viewModel = hiltViewModel<PokemonsViewModel>()
     val lifecycleOwner = LocalLifecycleOwner.current
     val state = viewModel.viewState.value
-    val context = LocalContext.current
 
     LifecycleEffect(
         lifecycleOwner = lifecycleOwner, lifecycleEvent = Lifecycle.Event.ON_CREATE
     ) {
-        viewModel.setEvent(Event.GetPokemons(20, 0))
+        viewModel.setEvent(Event.GetPokemons(20, state.page, state.pokemons))
     }
 
-    Scaffold {
-        TopAppBar(
-            title = {
-                Text(text = stringResource(R.string.app_name))
-            }
-        )
-        if (state.isLoading)
-            LoadingIndicator()
-        else
-            Box(
+    if (state.isLoading)
+        LoadingIndicator()
+    else
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.bg_pokeball),
+                contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black)
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.bg_pokeball),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .rotate(-35f)
-                        .offset(x = 125.dp),
-                    alignment = Alignment.Center
-                )
-                CenterFocusLazyColumn(state.pokemons ?: emptyList())
-            }
-    }
+                    .rotate(-35f)
+                    .offset(x = 125.dp),
+                alignment = Alignment.Center
+            )
+            VerticalPagerWith3VisibleItems(
+                state.pokemons ?: emptyList(),
+                nextPokemons = {
+                    viewModel.setEvent(Event.GetPokemons(20, state.page, state.pokemons))
+                },
+                onClick = {
+                    onPokemonClick(it)
+                })
+
+        }
 
 
     LaunchedEffect(Unit) {
@@ -115,64 +114,72 @@ fun PokemonsScreen() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CenterFocusLazyColumn(
+fun VerticalPagerWith3VisibleItems(
     pokemons: List<PokemonDomain>,
+    nextPokemons: () -> Unit = {},
+    onClick: (String) -> Unit = {}
 ) {
-    val visibleCount = 3
-    var listHeightPx by remember { mutableStateOf(0) }
+    val pagerState = rememberPagerState(pageCount = { pokemons.size })
     val density = LocalDensity.current
-    val listState = rememberLazyListState()
 
-    // Fallback: ~180.dp (in px)
+    var screenHeightPx by remember { mutableIntStateOf(0) }
+    val visibleCount = 3
     val fallbackCardHeightPx = with(density) { 180.dp.roundToPx() }
-
-    // Use measured height if available, else fallback
-    val cardHeightPx = if (listHeightPx > 0) listHeightPx / visibleCount else fallbackCardHeightPx
+    val cardHeightPx =
+        if (screenHeightPx > 0) screenHeightPx / visibleCount else fallbackCardHeightPx
     val cardHeight = with(density) { cardHeightPx.toDp() }
-    val pxPerItem = cardHeightPx
 
-    LazyColumn(
-        state = listState,
-        contentPadding = PaddingValues(vertical = with(density) { (cardHeightPx / 2).toDp() }),
-        verticalArrangement = Arrangement.spacedBy(
-            with(density) { -(cardHeightPx / 2.1f).toDp() }
-        ),
+    VerticalPager(
+        state = pagerState,
+        contentPadding = PaddingValues(vertical = with(density) { (cardHeightPx / 4).toDp() }),
+        pageSpacing = with(density) { -(cardHeightPx / 5).toDp() },
+        pageSize = PageSize.Fixed(cardHeight),
+        beyondBoundsPageCount = 3,
         modifier = Modifier
             .fillMaxSize()
             .onGloballyPositioned { coordinates ->
-                if (coordinates.size.height > 0 && coordinates.size.height != listHeightPx) {
-                    listHeightPx = coordinates.size.height
-                }
+                screenHeightPx = coordinates.size.height
             }
-    ) {
-        itemsIndexed(pokemons) { index, pokemon ->
-            val first = listState.firstVisibleItemIndex
-            val offsetPx = listState.firstVisibleItemScrollOffset
-            val centerIndex = first + visibleCount / 2
-            val offset = (index - centerIndex) - (offsetPx / pxPerItem.toFloat())
+    ) { page ->
+        val firstVisiblePage = if (pagerState.currentPageOffsetFraction >= 0f) {
+            pagerState.currentPage
+        } else {
+            pagerState.currentPage - 1
+        }
+        val centerIndex = firstVisiblePage + visibleCount / 2
+        val offset = (page - centerIndex) - pagerState.currentPageOffsetFraction
 
-            val angle = when {
-                index == centerIndex -> 0f
-                index < centerIndex -> -10f
-                else -> 10f
+        val angle = when {
+            page == centerIndex -> 0f
+            page < centerIndex -> -10f
+            else -> 10f
+        }
+
+        val translateY = offset * (cardHeight.value / 2.1f)
+        val scale = 1f - 0.07f * abs(offset)
+        val zIndex = if (page == centerIndex) 1f else 0f
+
+        FloatingImageCard(
+            pokemon = pokemons[page],
+            modifier = Modifier
+                .zIndex(zIndex)
+                .graphicsLayer(
+                    rotationZ = angle,
+                    translationY = with(density) { translateY },
+                    scaleX = scale,
+                    scaleY = scale,
+                )
+                .height(cardHeight)
+                .width(290.dp),
+            onClick = {
+                onClick(it)
             }
-            val translationY = offset * (cardHeight / 2.1f)
-            val scale = 1f - 0.07f * kotlin.math.abs(offset)
+        )
 
-            FloatingImageCard(
-                pokemon = pokemon,
-                modifier = Modifier
-                    .graphicsLayer(
-                        rotationZ = angle,
-                        translationY = with(density) { translationY.toPx() },
-                        scaleX = scale,
-                        scaleY = scale
-                    )
-                    .height(cardHeight)
-                    .width(290.dp)
-                    .padding(start = 24.dp),
-            )
+        LaunchedEffect(page == pokemons.size - 3) {
+            nextPokemons()
         }
     }
 }
@@ -181,12 +188,13 @@ fun CenterFocusLazyColumn(
 fun FloatingImageCard(
     pokemon: PokemonDomain,
     modifier: Modifier = Modifier,
+    onClick: (String) -> Unit = {}
 ) {
     var bgColor by remember { mutableStateOf(Color(0xFFE0E0E0)) }
 
     Box(
         modifier = modifier
-            .width(200.dp)
+            .width(50.dp)
             .wrapContentHeight(),
     ) {
         // Card background
@@ -194,6 +202,7 @@ fun FloatingImageCard(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .fillMaxSize(),
+            onClick = { onClick(pokemon.name) },
             shape = RoundedCornerShape(32.dp),
             colors = CardDefaults.cardColors(containerColor = bgColor),
             elevation = CardDefaults.cardElevation(8.dp)
