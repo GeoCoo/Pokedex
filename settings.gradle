@@ -20,6 +20,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Pokedex"
+include ':shared'
 include ':app'
 
 include ':core:core_design_system'
@@ -37,7 +38,7 @@ include ':feature:feature_tests'
 
 //core-api
 include ':core:core_api:di'
-include ':core:core_api:api_service'
+// include ':core:core_api:api_service'  // Replaced with shared KMP module
 include ':core:core_api:api'
 include ':core:core_api:impl'
 

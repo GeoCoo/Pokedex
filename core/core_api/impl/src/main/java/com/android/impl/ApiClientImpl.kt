@@ -1,23 +1,22 @@
 package com.android.impl
 
 import com.android.api.ApiClient
-import com.android.api_service.ApiService
 import com.android.core_model.PokemonListResponse
-import retrofit2.Response
+import com.android.shared.network.KtorApiClient
 import javax.inject.Inject
 
-class ApiClientImpl @Inject constructor(private val apiService: ApiService) : ApiClient {
-    override suspend fun getPokemons(limit:Int,offset:Int): Response<PokemonListResponse> =
-        apiService.getPokemons(limit, offset)
+class ApiClientImpl @Inject constructor(private val ktorApiClient: KtorApiClient) : ApiClient {
+    override suspend fun getPokemons(limit:Int,offset:Int): Result<PokemonListResponse> =
+        ktorApiClient.getPokemons(limit, offset)
 
-    override suspend fun sampleWithParam(param: Any): Response<Any> =
-        apiService.sampleRetrieveWithParam(param)
+    override suspend fun sampleWithParam(param: Any): Result<Any> =
+        ktorApiClient.sampleWithParam(param)
 
-    override suspend fun samplePost(param: Any): Response<Any> =
-        apiService.samplePost(param)
+    override suspend fun samplePost(param: Any): Result<Any> =
+        ktorApiClient.samplePost(param)
 
     override suspend fun samplePut(
         param: Any,
         update: Any
-    ): Response<Any> = apiService.samplePut(param, update)
+    ): Result<Any> = ktorApiClient.samplePut(param, update)
 }

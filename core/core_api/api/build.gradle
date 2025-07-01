@@ -6,4 +6,5 @@ android {
 
 dependencies {
     implementation project(':core:core_model')
+    implementation project(':shared')
 }

@@ -7,6 +7,6 @@ android {
 dependencies {
     implementation project(':core:core_model')
     implementation project(':core:core_api:api')
-    implementation project(':core:core_api:api_service')
+    implementation project(':shared')
 
 }

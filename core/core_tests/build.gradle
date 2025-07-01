@@ -15,7 +15,7 @@ dependencies {
 
     implementation project(':core:core_api:impl')
     implementation project(':core:core_api:api')
-    implementation project(':core:core_api:api_service')
+    implementation project(':shared')
 
     implementation project(':core:core_data:api')
     implementation project(':core:core_data:impl')

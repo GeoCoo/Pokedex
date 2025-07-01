@@ -1,13 +1,5 @@
 package com.android.core_model
 
-data class PokemonListResponse(
-    val count: Int,
-    val next: String?,
-    val previous: String?,
-    val results: List<PokemonEntryDto>
-)
-
-data class PokemonEntryDto(
-    val name: String,
-    val url: String
-)
+// Re-export from shared module for backward compatibility
+typealias PokemonListResponse = com.android.shared.model.PokemonListResponse
+typealias PokemonEntryDto = com.android.shared.model.PokemonEntryDto

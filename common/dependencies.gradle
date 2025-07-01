@@ -18,15 +18,8 @@ dependencies {
     // Kotlin
     implementation(libs.kotlin.stdlib)
 
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.json)
-
     // Secure shared preferences library.
     implementation(libs.androidx.security)
-
-    // OkHttp3
-    implementation(libs.okhttp3.interceptor)
 
     //ComposeBOM
     implementation platform(libs.androidx.compose.bom)
@@ -45,9 +38,6 @@ dependencies {
 
     // Coroutines test
     testImplementation(libs.coroutines.test)
-
-    // Mock Server
-    testImplementation(libs.okhttp3.mockwebserver)
 
     // Mockito
     testImplementation(libs.mockito.core)

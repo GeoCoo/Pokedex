@@ -17,14 +17,23 @@ class PokemonsRepositoryImpl @Inject constructor(
 ) : PokemonsRepository {
 
     override fun getPokemons(limit: Int, offset: Int): Flow<PokemonsResponse> = flow {
-        val response = apiClient.getPokemons(limit, offset)
+        val result = apiClient.getPokemons(limit, offset)
 
-        when {
-            response.isSuccessful && !response.body()?.results.isNullOrEmpty() -> {
-                emit(PokemonsResponse.Success(response.body()))
-            }
-
-            else -> {
+        result.fold(
+            onSuccess = { response ->
+                if (response.results.isNotEmpty()) {
+                    emit(PokemonsResponse.Success(response))
+                } else {
+                    emit(
+                        PokemonsResponse.Error(
+                            errorMsg = resourceProvider.getString(
+                                R.string.generic_error_msg
+                            )
+                        )
+                    )
+                }
+            },
+            onFailure = { exception ->
                 emit(
                     PokemonsResponse.Error(
                         errorMsg = resourceProvider.getString(
@@ -33,7 +42,7 @@ class PokemonsRepositoryImpl @Inject constructor(
                     )
                 )
             }
-        }
+        )
     }.catch {
         emit(PokemonsResponse.Failed(errorMsg = it.localizedMessage ?: ""))
     }
