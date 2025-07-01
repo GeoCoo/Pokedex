@@ -4,6 +4,9 @@ import com.android.shared.model.PokemonListResponse
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import kotlinx.serialization.SerializationException
 
 class KtorApiClient(private val httpClient: HttpClient) {
     
@@ -12,45 +15,60 @@ class KtorApiClient(private val httpClient: HttpClient) {
     }
     
     suspend fun getPokemons(limit: Int, offset: Int): Result<PokemonListResponse> {
-        return try {
-            val response = httpClient.get("${BASE_URL}pokemon") {
+        return safeApiCall {
+            httpClient.get("${BASE_URL}pokemon") {
                 parameter("limit", limit)
                 parameter("offset", offset)
             }
-            Result.success(response.body<PokemonListResponse>())
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
     
     suspend fun sampleWithParam(param: Any): Result<Any> {
-        return try {
-            val response = httpClient.get("${BASE_URL}sampleWithParam/$param")
-            Result.success(response.body<Any>())
-        } catch (e: Exception) {
-            Result.failure(e)
+        return safeApiCall {
+            httpClient.get("${BASE_URL}sampleWithParam/$param")
         }
     }
     
     suspend fun samplePost(param: Any): Result<Any> {
-        return try {
-            val response = httpClient.post("${BASE_URL}samplePost") {
+        return safeApiCall {
+            httpClient.post("${BASE_URL}samplePost") {
+                contentType(ContentType.Application.Json)
                 setBody(param)
             }
-            Result.success(response.body<Any>())
-        } catch (e: Exception) {
-            Result.failure(e)
         }
     }
     
     suspend fun samplePut(param: Any, update: Any): Result<Any> {
-        return try {
-            val response = httpClient.put("${BASE_URL}samplePutWithParam/$param") {
+        return safeApiCall {
+            httpClient.put("${BASE_URL}samplePutWithParam/$param") {
+                contentType(ContentType.Application.Json)
                 setBody(update)
             }
-            Result.success(response.body<Any>())
+        }
+    }
+    
+    private suspend inline fun <reified T> safeApiCall(
+        crossinline apiCall: suspend () -> HttpResponse
+    ): Result<T> {
+        return try {
+            val response = apiCall()
+            when {
+                response.status.isSuccess() -> {
+                    Result.success(response.body<T>())
+                }
+                else -> {
+                    Result.failure(
+                        NetworkError.HttpError(
+                            response.status.value,
+                            response.status.description
+                        )
+                    )
+                }
+            }
+        } catch (e: SerializationException) {
+            Result.failure(NetworkError.SerializationError("Failed to parse response", e))
         } catch (e: Exception) {
-            Result.failure(e)
+            Result.failure(NetworkError.NetworkException("Network request failed", e))
         }
     }
 }
